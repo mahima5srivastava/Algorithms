@@ -1,14 +1,38 @@
-import UIKit
+//
+//  Percolation.swift
+//  Flood
+//
+//  Created by MAHIMA on 27/08/20.
+//  Copyright © 2020 MAHIMA. All rights reserved.
+//
+
+import Foundation
 
 struct Connections {
     var values: [Int] = []
+    var top = 0
+    var bottom = 0
     init(n: Int) {
-        values = Array(sequence(first: 0, next: { (val) -> Int? in
-            if val < n {
+        self.top = (n * n)
+        self.bottom = (n * n) + 1
+        self.values = Array(sequence(first: 0, next: { (val) -> Int? in
+            if val < (n * n) - 1 {
                 return val + 1
             }
             return nil
         }))
+        self.values.append(top)
+        self.values.append(bottom)
+        for i in 0..<n {
+            union(a: top, b: i)
+        }
+        for i in (n * n - n)..<(n * n) {
+            union(a: bottom, b: i)
+        }
+    }
+    
+    mutating func checkPercolation() -> Bool {
+        return isConnected(a: top, b: bottom)
     }
     mutating func union(a: Int, b: Int) {
         let rootInfoA = getRootAndWeight(of: a)
@@ -32,29 +56,6 @@ struct Connections {
             index = values[index]
             weight += 1
         }
-//        print("root of \(val) is \(index)")
         return (index, weight)
     }
 }
-var connections = Connections(n: 9)
-//print(connections.values)
-connections.union(a: 1, b: 2)
-//print(connections.values)
-connections.union(a: 3, b: 4)
-//print(connections.values)
-connections.union(a: 5, b: 6)
-//print(connections.values)
-connections.union(a: 7, b: 8)
-//print(connections.values)
-connections.union(a: 7, b: 9)
-//print(connections.values)
-connections.union(a: 5, b: 0)
-print(connections.values)
-connections.union(a: 1, b: 9)
-//print(connections.values)
-print(connections.isConnected(a: 1, b: 9))
-print(connections.isConnected(a: 1, b: 8))
-print(connections.isConnected(a: 6, b: 0))
-print(connections.isConnected(a: 3, b: 4))
-print(connections.isConnected(a: 1, b: 7))
-print(connections.values)
